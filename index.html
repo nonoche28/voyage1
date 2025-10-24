@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Voyages – Inspirations & Itinéraires</title>
+  <meta name="description" content="Portfolio de voyages : idées, itinéraires, budgets et cartes." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0f172a; --card:#111827; --text:#e5e7eb; --muted:#94a3b8; --brand:#60a5fa; --brand-2:#a78bfa; --radius:16px; --shadow:0 10px 30px rgba(0,0,0,.35); }
+    *{box-sizing:border-box} html,body{height:100%}
+    body{margin:0;font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;background:radial-gradient(1200px 800px at 80% -10%, rgba(96,165,250,.15),transparent),radial-gradient(900px 600px at -10% 10%, rgba(167,139,250,.12),transparent),var(--bg);color:var(--text);line-height:1.6}
+    .container{max-width:1100px;margin:0 auto;padding:24px}
+    header{position:sticky;top:0;z-index:10;backdrop-filter:blur(8px);background:rgba(15,23,42,.5);border-bottom:1px solid rgba(148,163,184,.12)}
+    nav{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .logo{font-weight:700;letter-spacing:.4px}.logo b{color:var(--brand)}
+    .nav-links{display:flex;gap:14px}.nav-links a{color:var(--muted);text-decoration:none;font-weight:600;padding:8px 10px;border-radius:10px}.nav-links a:hover{color:var(--text);background:rgba(148,163,184,.12)}
+    .hero{padding:72px 0 48px;display:grid;grid-template-columns:1.2fr .8fr;gap:32px;align-items:center}
+    .title{font-size:clamp(28px,4vw,44px);line-height:1.1;font-weight:800;margin:0 0 12px}
+    .gradient{background:linear-gradient(90deg,var(--brand),var(--brand-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .subtitle{color:var(--muted);margin:0 0 24px;font-size:18px}
+    .cta{display:flex;gap:12px}.btn{display:inline-block;padding:12px 16px;border-radius:999px;text-decoration:none;font-weight:700;border:1px solid rgba(148,163,184,.25)}
+    .btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#0b1020;border:none;box-shadow:var(--shadow)} .btn-outline{color:var(--text)}
+    .hero-card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.005));border:1px solid rgba(148,163,184,.18);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+    section{padding:36px 0} h2{font-size:clamp(22px,3vw,30px);margin:0 0 16px} p.section-intro{color:var(--muted);margin:0 0 22px}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}.col-4{grid-column:span 4}.col-12{grid-column:span 12}
+    @media (max-width:860px){.hero{grid-template-columns:1fr}.col-4{grid-column:span 12}}
+    .card{background:var(--card);border:1px solid rgba(148,163,184,.15);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);transition:transform .2s ease,box-shadow .2s ease}
+    .card:hover{transform:translateY(-2px)} .card h3{margin:0 0 6px;font-size:18px} .card p{margin:0;color:var(--muted)}
+    .tags{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px}.tag{font-size:12px;padding:4px 8px;border-radius:999px;border:1px solid rgba(148,163,184,.25);color:var(--muted)}
+    footer{padding:24px 0 40px;color:var(--muted);text-align:center;font-size:14px;border-top:1px solid rgba(148,163,184,.12)} footer a{color:var(--text);text-decoration:none}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">Tom<span class="muted">.dev</span> <b>★</b></div>
+        <div class="nav-links">
+          <a href="#voyages">Voyages</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <h1 class="title">Bonjour, je suis <span class="gradient">Tom</span> 👋</h1>
+        <p class="subtitle">Je partage mes itinéraires et budgets pour inspirer vos prochains voyages.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="#voyages">Voir les voyages</a>
+          <a class="btn btn-outline" href="#contact">Me contacter</a>
+        </div>
+      </div>
+      <div class="hero-card">
+        <strong>Infos rapides</strong>
+        <ul class="muted">
+          <li>📍 Basé en France</li>
+          <li>🧭 Road trips & nature</li>
+          <li>🧰 HTML, CSS, JS (débutant)</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="voyages">
+      <h2>Voyages (depuis CSV)</h2>
+      <p class="section-intro">Importe ton CSV principal, ou place <code>data/voyages.csv</code> dans ce dépôt pour chargement automatique.</p>
+
+      <div class="card">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
+          <label class="btn btn-outline"><input id="csvInput" type="file" accept=".csv" style="display:none"/>Importer mon CSV…</label>
+          <button id="loadDemo" class="btn">Charger un exemple</button>
+          <span id="status" class="muted"></span>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+          <input id="searchInput" class="btn" style="border-radius:12px" placeholder="Rechercher (pays, titre, thèmes)…"/>
+          <select id="continentSelect" class="btn"><option value="">Tous les continents</option></select>
+          <select id="themeSelect" class="btn"><option value="">Tous les thèmes</option></select>
+          <select id="sortSelect" class="btn">
+            <option value="">Trier…</option>
+            <option value="days_asc">Durée (↑)</option>
+            <option value="days_desc">Durée (↓)</option>
+            <option value="budget_asc">Budget (↑)</option>
+            <option value="budget_desc">Budget (↓)</option>
+          </select>
+        </div>
+        <div id="tripsGrid" class="grid"></div>
+        <p class="muted" id="countInfo"></p>
+      </div>
+      <details class="card" style="margin-top:16px">
+        <summary><strong>Format CSV attendu</strong></summary>
+        <p class="muted">En-têtes : <code>title;country;continent;days;budget_eur;season;themes;summary;map_url;cover_image_url</code></p>
+      </details>
+    </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
+      <p class="section-intro">Ce bouton ouvre votre client mail (pas de backend nécessaire).</p>
+      <a class="btn btn-primary" href="mailto:prenom.nom@email.com?subject=Contact%20depuis%20votre%20site">M'écrire un email</a>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      © <span id="year"></span> Tom — Fait avec ❤️ et beaucoup de café.
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    const state = { trips: [], filters: { search:'', continent:'', theme:'', sort:'' } };
+    const el = (id)=>document.getElementById(id);
+    const csvInput=el('csvInput'), searchInput=el('searchInput'), continentSelect=el('continentSelect'), themeSelect=el('themeSelect'), sortSelect=el('sortSelect'), tripsGrid=el('tripsGrid'), countInfo=el('countInfo'), status=el('status');
+
+    // Try auto-load /data/voyages.csv if present
+    fetch('data/voyages.csv').then(r=> r.ok ? r.text(): Promise.reject()).then(t=>{ status.textContent='Chargé: data/voyages.csv'; loadFromCSVText(t); }).catch(()=>{});
+
+    const templateCSV = `title;country;continent;days;budget_eur;season;themes;summary;map_url;cover_image_url
+Islande en 10 jours;Islande;Europe;10;1800;Été;nature,route;Boucle autour de l'île en van.;https://goo.gl/maps/xxx;https://images.unsplash.com/photo-1501785888041-af3ef285b470
+Ouest américain;États-Unis;Amérique;14;2500;Printemps;national parks,roadtrip;Parcs nationaux et routes mythiques.;https://goo.gl/maps/yyy;https://images.unsplash.com/photo-1501785888041-af3ef285b470`;
+
+    el('loadDemo').addEventListener('click', ()=> loadFromCSVText(templateCSV));
+    el('csvInput').addEventListener('change', (e)=>{ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>loadFromCSVText(r.result); r.readAsText(f,'utf-8'); });
+    searchInput.addEventListener('input', ()=>{ state.filters.search=searchInput.value.trim().toLowerCase(); render(); });
+    continentSelect.addEventListener('change', ()=>{ state.filters.continent=continentSelect.value; render(); });
+    themeSelect.addEventListener('change', ()=>{ state.filters.theme=themeSelect.value; render(); });
+    sortSelect.addEventListener('change', ()=>{ state.filters.sort=sortSelect.value; render(); });
+
+    function loadFromCSVText(text){
+      const rows = parseCSV(text);
+      if(!rows.length) return;
+      const headers = rows[0].map(h=>h.trim());
+      const idx = Object.fromEntries(headers.map((h,i)=>[h,i]));
+      const required = ['title','country','continent','days','budget_eur','season','themes','summary','map_url','cover_image_url'];
+      const ok = required.every(k => k in idx);
+      if(!ok){ alert('En-têtes manquants: '+required.join(';')); return; }
+      const trips = rows.slice(1).filter(r=>r.length>1).map(r=>({
+        title:r[idx.title]?.trim()||'',
+        country:r[idx.country]?.trim()||'',
+        continent:r[idx.continent]?.trim()||'',
+        days:Number(r[idx.days])||0,
+        budget_eur:Number(r[idx.budget_eur])||0,
+        season:r[idx.season]?.trim()||'',
+        themes:(r[idx.themes]||'').split(',').map(t=>t.trim()).filter(Boolean),
+        summary:r[idx.summary]?.trim()||'',
+        map_url:r[idx.map_url]?.trim()||'',
+        cover_image_url:r[idx.cover_image_url]?.trim()||''
+      }));
+      state.trips=trips; hydrateFilters(trips); render();
+    }
+
+    function parseCSV(text){ const lines=text.replace(/\r/g,'').split('\n').filter(Boolean); const sep=text.indexOf(';')!==-1?';':','; return lines.map(line=>splitCSV(line,sep)); }
+    function splitCSV(line, sep){ const out=[]; let cur=''; let inQ=false; for(let i=0;i<line.length;i++){ const ch=line[i]; if(ch=='"'){ if(inQ && line[i+1]=='"'){ cur+='"'; i++; } else { inQ=!inQ; } } else if(ch==sep && !inQ){ out.push(cur); cur=''; } else { cur+=ch; } } out.push(cur); return out; }
+    function hydrateFilters(trips){ const continents=[...new Set(trips.map(t=>t.continent).filter(Boolean))].sort(); continentSelect.innerHTML='<option value="">Tous les continents</option>'+continents.map(c=>`<option value="${c}">${c}</option>`).join(''); const themes=[...new Set(trips.flatMap(t=>t.themes))].sort(); themeSelect.innerHTML='<option value="">Tous les thèmes</option>'+themes.map(t=>`<option value="${t}">${t}</option>`).join(''); }
+    function render(){ const {search,continent,theme,sort}=state.filters; let list=[...state.trips]; list=list.filter(t=>{ const hay=(t.title+' '+t.country+' '+t.continent+' '+t.season+' '+t.themes.join(' ')).toLowerCase(); const A=!search||hay.includes(search); const B=!continent||t.continent===continent; const C=!theme||t.themes.includes(theme); return A&&B&&C; }); if(sort==='days_asc') list.sort((a,b)=>a.days-b.days); if(sort==='days_desc') list.sort((a,b)=>b.days-a.days); if(sort==='budget_asc') list.sort((a,b)=>a.budget_eur-b.budget_eur); if(sort==='budget_desc') list.sort((a,b)=>b.budget_eur-a.budget_eur); tripsGrid.innerHTML=list.map(t=>tripCard(t)).join(''); countInfo.textContent=list.length?`${list.length} voyage(s) affiché(s)`:'Aucun voyage ne correspond aux filtres.'; }
+    function tripCard(t){ const budget=t.budget_eur?new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(t.budget_eur):'—'; const days=t.days?`${t.days} j`:'—'; const img=t.cover_image_url||'https://images.unsplash.com/photo-1501785888041-af3ef285b470'; const mapLink=t.map_url?`<a href="${t.map_url}" target="_blank" rel="noopener" class="btn btn-outline">Itinéraire</a>`:''; return `<article class="card col-4" style="overflow:hidden"><div style="height:160px;border-radius:12px;overflow:hidden;margin-bottom:10px;background:#0b1020"><img src="${img}" alt="${t.title}" style="width:100%;height:100%;object-fit:cover;display:block"/></div><h3>${t.title}</h3><p class="muted">${t.country} • ${t.continent} • ${t.season||'Saison libre'}</p><p>${t.summary||''}</p><div class="tags"><span class="tag">⏱ ${days}</span><span class="tag">💶 ${budget}</span>${t.themes.slice(0,3).map(th=>`<span class="tag">#${th}</span>`).join('')}</div><div style="margin-top:12px">${mapLink}</div></article>`; }
+  </script>
+</body>
+</html>
