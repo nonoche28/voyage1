@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Détails du voyage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root { --bg:#0f172a; --card:#0b1225; --text:#e5e7eb; --muted:#94a3b8; --brand:#60a5fa; --radius:16px; }
+*{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.container{max-width:1100px;margin:0 auto;padding:24px}
+a{color:var(--brand)} .back{display:inline-block;margin:16px 0}
+h1{margin:.2rem 0} .muted{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+.col-8{grid-column:span 8} .col-4{grid-column:span 4} .col-12{grid-column:span 12}
+@media (max-width:960px){.col-8,.col-4{grid-column:span 12}}
+.card{background:var(--card);border:1px solid rgba(148,163,184,.18);border-radius:16px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.day{padding:10px 12px;border-left:3px solid var(--brand);border-radius:12px;background:rgba(96,165,250,.08)}
+.badge{display:inline-block;border:1px solid rgba(148,163,184,.28);padding:4px 8px;border-radius:999px;margin-right:6px;color:var(--muted);font-size:12px}
+.table{width:100%;border-collapse:collapse} .table th,.table td{border-bottom:1px solid rgba(148,163,184,.18);padding:8px;text-align:left}
+.right{text-align:right} .pill{display:inline-block;padding:4px 8px;border-radius:999px;border:1px solid rgba(148,163,184,.25);margin-right:6px;color:var(--muted);font-size:12px}
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="index.html" class="back">← Retour</a>
+  <h1 id="title">Détails du voyage</h1>
+  <p class="muted" id="meta"></p>
+
+  <div class="grid">
+    <div class="col-8">
+      <div class="card">
+        <h2>Itinéraire</h2>
+        <div id="itinerary"></div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="card">
+        <h2>Budget par catégorie</h2>
+        <table class="table">
+          <thead><tr><th>Catégorie</th><th class="right">Total EUR</th></tr></thead>
+          <tbody id="budget"></tbody>
+          <tfoot><tr><th>Total</th><th class="right" id="budget_total"></th></tr></tfoot>
+        </table>
+      </div>
+      <div class="card">
+        <h2>Activités (liste)</h2>
+        <div id="activities_list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const tripId = params.get('trip_id') || '';
+  const fmtEUR = (n)=> new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(n||0);
+
+  const parseCSV = (t) => {
+    const lines = t.replace(/\r/g,'').split('\n').filter(Boolean);
+    const sep = t.indexOf(';') !== -1 ? ';' : ',';
+    return lines.map(l => {
+      const out=[]; let cur=''; let inQ=false;
+      for (let i=0;i<l.length;i++){
+        const ch=l[i];
+        if (ch === '"'){ if (inQ && l[i+1] === '"'){ cur+='"'; i++; } else { inQ=!inQ; } }
+        else if (ch === sep && !inQ){ out.push(cur); cur=''; }
+        else { cur += ch; }
+      }
+      out.push(cur); return out;
+    });
+  };
+  const rowsToObj = (rows) => {
+    const h=rows[0].map(h=>h.trim());
+    const idx=Object.fromEntries(h.map((x,i)=>[x,i]));
+    return rows.slice(1).filter(r=>r.length>1).map(r=>Object.fromEntries(h.map((k,i)=>[k, r[i]??''])));
+  };
+
+  async function loadAll(){
+    const [v,i,a] = await Promise.all([
+      fetch('data/voyages.csv').then(r=>r.text()).catch(()=>''), 
+      fetch('data/itineraries.csv').then(r=>r.text()).catch(()=>''), 
+      fetch('data/activities.csv').then(r=>r.text()).catch(()=>'' )
+    ]);
+
+    const voyages = v ? rowsToObj(parseCSV(v)) : [];
+    const itin    = i ? rowsToObj(parseCSV(i)) : [];
+    const acts    = a ? rowsToObj(parseCSV(a)) : [];
+
+    const trip = voyages.find(x => (x.trip_id||'') === tripId) || voyages[0] || {};
+    document.getElementById('title').textContent = trip.title ? `${trip.title}` : `Voyage ${tripId||''}`;
+    document.getElementById('meta').innerHTML = `${trip.country||''} • ${trip.continent||''} • ${trip.season||''} ${trip.days? '• '+trip.days+' j' : ''} ${trip.budget_eur? '• '+fmtEUR(Number(trip.budget_eur)) : ''}`;
+
+    // Itinéraire
+    const days = itin.filter(x=> (x.trip_id||'')===tripId).sort((a,b)=>(Number(a.day)||0)-(Number(b.day)||0));
+    const wrap = document.getElementById('itinerary');
+    if(!days.length){ wrap.innerHTML = '<p class="muted">Aucun itinéraire trouvé pour ce voyage.</p>'; }
+    else {
+      wrap.innerHTML = days.map(d => `
+        <div class="day" style="margin:8px 0">
+          <div><span class="badge">Jour ${d.day||''}</span> ${d.date||''} • ${d.city||''}</div>
+          <div><strong>${d.title||''}</strong></div>
+          <div>${d.summary||''}</div>
+          <div style="margin-top:6px">
+            ${d.transport_mode?'<span class="pill">🚗 '+d.transport_mode+'</span>':''}
+            ${d.distance_km?'<span class="pill">📏 '+d.distance_km+' km</span>':''}
+            ${d.accommodation_name?'<span class="pill">🏨 '+d.accommodation_name+'</span>':''}
+          </div>
+        </div>`).join('');
+    }
+
+    // Activités + budget
+    const list = acts.filter(x=> (x.trip_id||'')===tripId);
+    const byCat = {}; let total = 0;
+    list.forEach(x=>{
+      const cat=(x.category||'autre').toLowerCase()||'autre';
+      const eur = Number(x.cost_eur||0) || 0;
+      byCat[cat]=(byCat[cat]||0)+eur;
+      total+=eur;
+    });
+    const budgetBody = document.getElementById('budget');
+    const cats = Object.keys(byCat).sort();
+    budgetBody.innerHTML = cats.map(c=>`<tr><td>${c}</td><td class="right">${fmtEUR(byCat[c])}</td></tr>`).join('')
+      || '<tr><td colspan="2" class="muted">Aucune dépense en EUR</td></tr>';
+    document.getElementById('budget_total').textContent = fmtEUR(total);
+
+    const actsWrap = document.getElementById('activities_list');
+    actsWrap.innerHTML = list.sort((a,b)=>(Number(a.day||0)-Number(b.day||0)))
+      .map(x=>`<div style="margin:6px 0"><span class="badge">J ${x.day||''}</span> ${x.city||''} — <strong>${x.activity_name||''}</strong> ${x.cost_eur? '• '+fmtEUR(Number(x.cost_eur)) : ''} ${x.currency && x.cost_original? '• '+x.cost_original+' '+x.currency : ''}</div>`)
+      .join('') || '<p class="muted">Aucune activité listée.</p>';
+  }
+  loadAll();
+</script>
+</body>
+</html>
